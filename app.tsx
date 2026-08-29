@@ -12,7 +12,7 @@ const FFMPEG =
 
 const TMP = tmpdir()
 // Each frame gets a unique path so GPUI's path-based image cache never returns a stale frame
-const framePath = (idx: number) => join(TMP, `cheesecake-cam-${idx}.jpg`)
+const framePath = (idx: number) => join(TMP, `gpuix-camera-demo-${idx}.jpg`)
 
 async function startCamera(
   onFrame: (path: string) => void,
@@ -155,7 +155,7 @@ function App() {
         backgroundColor: 'rgba(0,0,0,0.5)',
         display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <text style={{ color: '#fff', fontSize: 20, fontWeight: 700 }}>Cheesecake Lovers</text>
+        <text style={{ color: '#fff', fontSize: 20, fontWeight: 700 }}>GPUIX Camera Demo</text>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <LiveDot />
           <text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 13 }}>LIVE</text>
@@ -167,8 +167,8 @@ function App() {
 }
 
 render(<App />, {
-  title: 'Cheesecake Lovers',
-  appName: 'Cheesecake Lovers',
+  title: 'GPUIX Camera Demo',
+  appName: 'GPUIX Camera Demo',
   width: 1280,
   height: 720,
   titlebarTransparent: true,

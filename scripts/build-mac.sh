@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-APP_NAME="Cheesecake Lovers"
-BINARY_NAME="cheesecake-lovers"
+APP_NAME="GPUIX Camera Demo"
+BINARY_NAME="gpuix-camera-demo"
 APP_BUNDLE="dist/${APP_NAME}.app"
 
 # Compile standalone binary
-bun build --compile app.tsx --outfile "dist/${BINARY_NAME}"
+bun build --compile --minify --define 'process.env.NODE_ENV="production"' app.tsx --outfile "dist/${BINARY_NAME}"
 
 # Build .app bundle structure
 rm -rf "${APP_BUNDLE}"
@@ -33,7 +33,7 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << EOF
     <key>CFBundleExecutable</key>
     <string>${BINARY_NAME}</string>
     <key>CFBundleIdentifier</key>
-    <string>com.cheesecakelovers.app</string>
+    <string>com.gpuixcamerademo.app</string>
     <key>CFBundleName</key>
     <string>${APP_NAME}</string>
     <key>CFBundleDisplayName</key>
@@ -48,6 +48,8 @@ cat > "${APP_BUNDLE}/Contents/Info.plist" << EOF
     <true/>
     <key>LSMinimumSystemVersion</key>
     <string>12.0</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Camera access is required to capture live video frames.</string>
 </dict>
 </plist>
 EOF

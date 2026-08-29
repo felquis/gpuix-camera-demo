@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install ffmpeg
+        run: brew install ffmpeg
+
+      - name: Build macOS DMG
+        run: bash scripts/build-mac.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-dmg
+          path: dist/*.dmg
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install NSIS
+        run: choco install nsis -y --no-progress
+
+      - name: Install ffmpeg
+        run: choco install ffmpeg -y --no-progress
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $env:PATH = "C:\Program Files (x86)\NSIS;$env:PATH"
+          ./packaging/bundle-nsis.ps1
+
+      - name: Determine artifact path
+        id: installer
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "path=packaging/output/gpuix-camera-demo-$version-setup.exe" >> $env:GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-setup-${{ steps.installer.outputs.version }}
+          path: ${{ steps.installer.outputs.path }}
+
+  release:
+    needs: [build-mac, build-windows]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**
+          generate_release_notes: true

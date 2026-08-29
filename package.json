@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "bun --hot app.tsx",
-    "build:mac": "bash scripts/build-mac.sh"
+    "build:mac": "bash scripts/build-mac.sh",
+    "build:windows": "pwsh scripts/build-windows.ps1"
   },
   "devDependencies": {
     "@types/bun": "latest",
