@@ -15,6 +15,16 @@ mkdir -p "${APP_BUNDLE}/Contents/Resources"
 
 cp "dist/${BINARY_NAME}" "${APP_BUNDLE}/Contents/MacOS/${BINARY_NAME}"
 
+# Bundle ffmpeg so the app works without Homebrew installed
+FFMPEG_BIN=$(command -v ffmpeg || echo "/opt/homebrew/bin/ffmpeg")
+if [ -f "$FFMPEG_BIN" ]; then
+  cp "$FFMPEG_BIN" "${APP_BUNDLE}/Contents/MacOS/ffmpeg"
+  chmod +x "${APP_BUNDLE}/Contents/MacOS/ffmpeg"
+  echo "  bundled ffmpeg from ${FFMPEG_BIN}"
+else
+  echo "  warning: ffmpeg not found, skipping bundle"
+fi
+
 cat > "${APP_BUNDLE}/Contents/Info.plist" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
