@@ -21,4 +21,4 @@ function App() {
   )
 }
 
-render(<App />, { title: 'Hello World', width: 800, height: 600 })
+render(<App />, { title: 'Cheesecake Lovers', appName: 'Cheesecake Lovers', width: 800, height: 600 })
